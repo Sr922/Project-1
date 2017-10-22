@@ -25,8 +25,6 @@ class main {
 
     public function __construct()
     {
-        //print_r($_REQUEST);
-        //set default page request when no parameters are in URL
         $pageRequest = 'uploadform';
         //check if there are parameters
         if(isset($_REQUEST['page'])) {
@@ -40,8 +38,7 @@ class main {
         if($_SERVER['REQUEST_METHOD'] == 'GET') {
         	$page->get();
         } else {
-        	echo "coming here";
-            $page->post();
+        	$page->post();
         }
 
     }
@@ -70,26 +67,6 @@ abstract class page {
     public function post() {
         print_r($_POST);
     }
-}
-
-class homepage extends page {
-
-    public function get() {
-
-    	$form = '<form action="index2.php" method="post">';
-        $form .= 'First name:<br>';
-        $form .= '<input type="text" name="firstname" value="Mickey">';
-        $form .= '<br>';
-        $form .= 'Last name:<br>';
-        $form .= '<input type="text" name="lastname" value="Mouse">';
-        $form .= '<input type="submit" value="Submit">';
-        $form .= '</form> ';
-        $this->html .= 'homepage';
-        $this->html .= $form;
-
-        echo $form;
-    }
-
 }
 
 class uploadform extends page
@@ -128,23 +105,8 @@ class uploadform extends page
 	            $file->set_size($_FILES["file"]["size"]);
 	            $file->set_tmp_name($_FILES["file"]["tmp_name"]);
 	            
-	            echo "Upload: " . $file->get_name() . "<br />";
-	            echo "Type: " . $file->get_type() . "<br />";
-	            echo "Size: " . $file->get_size() . " Kb<br />";
-	            echo "Temp file: " . $file->get_tmp_name() . "<br />";
-
-	            //if file already exists
-	            if (file_exists("upload/" . $_FILES["file"]["name"])) {
-	            	echo $_FILES["file"]["name"] . " already exists. ";
-	            }
-	            else {
-	            	if (move_uploaded_file($_FILES['file']['tmp_name'], __DIR__ . '/uploads/' . $_FILES['file']['name'])) {
-					    echo "Uploaded";
-					} else {
-					   echo "File was not uploaded";
-					}
-					header('Location: '.$url."fileName=". __DIR__ . '/uploads/' . $_FILES['file']['name']);
-		            
+	            if($file->saveFile($url)){
+	            	header('Location: '.$url."fileName=". __DIR__ . '/uploads/' . $file->get_name());
 	            }
 	        }
 	     } else {
@@ -192,8 +154,19 @@ class File {
 
     
     
-    function saveFile() { 
-        print 'Inside `saveFile()`'; 
+    function saveFile($url) { 
+        if (file_exists("upload/" . $this->get_name())) {
+        	echo $file->get_name() . " already exists. ";
+        }
+        else {
+        	if (move_uploaded_file($this->get_tmp_name(), __DIR__ . '/uploads/' . $this->get_name())) {
+			    return true;
+			} else {
+			   return false;
+			}
+			
+            
+        }
     } 
 }
 
