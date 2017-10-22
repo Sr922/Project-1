@@ -57,7 +57,6 @@ abstract class page {
     public function __destruct()
     {
         $this->html .= '</body></html>';
-        // stringFunctions::printThis($this->html);
     }
 
     public function get() {
@@ -213,7 +212,7 @@ class Parser {
 		        echo "<tr>";
 		    for ( $k = 0; $k != ($num_of_fields+1); $k++ ) {
 		    	$fields[$k] = str_replace("\"", "", $fields[$k]);
-		        echo "<td>" . $fields[$k] . "</td>";
+		        echo "<th>" . $fields[$k] . "</th>";
 		    }
 		        echo "</tr>";
 
